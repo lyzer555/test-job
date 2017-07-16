@@ -1,0 +1,294 @@
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-control" content="public">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+  <style>
+
+  .first {
+    width: 100%;
+    height: 250px;
+    margin: auto;
+    background-color: white;\
+    margin-bottom:10px;
+    box-shadow: 2px 2px 2px #36919E;
+  }
+
+  .container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+
+  .form-control, select2 {
+    border-radius: 0px;
+  }
+
+  h1 {
+      color: #fff;
+      text-align: center;
+      font-family: Lato, sans-serif;
+      font-size: 6em;
+      line-height: 1em;
+  }
+
+  th {
+    color: #777777;
+  }
+  .form-control:focus {
+    border: 1px solid #004d99;
+    border-radius: 0px;
+    outline: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
+  .center-block {
+    float:none;
+  }
+  body {
+    background-color: #4DD0E1;
+  }
+  
+  .row1 {
+    margin-top:10px;
+  }
+
+  .row11 {
+    margin-top:20px;
+  }
+
+  .error {
+    color:#bf4040;
+  }
+
+  .row2 {
+    margin-top:30px;
+  }
+
+  #fromT {
+    font-size:14pt;
+    color:#555555;
+  }
+
+  #result {
+    font-size:18pt; 
+    color:#428bca;
+  }
+</style>
+</head>
+<body >
+
+  <div class='container'>
+    <div class='row'>
+      <h1>Currency converter</h1>
+    </div>
+    <div class='row'>
+      <div class='col-md-8 first'>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>CURRENCY_IN</th>
+              <th>amount</th>
+              <th>result</th>
+              <th>CURRENCY_OUT</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class='row row1'>
+      <div class='col-md-8 first'>
+        <div class='row row11'>
+          <div class='col-md-6'>
+           <div class='col-md-4'>
+            <input type="number" class="form-control" id='amount' placeholder='amount' min='0'>
+            <p id='no-input' class='error'></p>
+           </div>
+           <div class='col-md-8'>
+            <select class="form-control" id='from'>
+              <?php 
+            
+              for ($i = 0; $i < count($this->currencies); $i++)
+              {
+                echo "<option>".$this->currencies[$i]."</option>";
+              }
+            ?>
+            </select>
+           </div>
+          </div>
+          <div class='col-md-6'>
+            <div class='col-md-4'>
+              <button type="button" class="btn btn-default btn-sm" id='swap'>
+                <span class="glyphicon glyphicon-resize-horizontal"></span> Swap
+              </button>
+            </div>
+            <div class='col-md-8'>
+              <select class="form-control" id='to'>
+                <?php 
+              
+                for ($i = 0; $i < count($this->currencies); $i++)
+                {
+                  echo "<option>".$this->currencies[$i]."</option>";
+                }
+              ?>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class='row row2'>
+          <div class="col-md-4">
+             
+          </div>
+          <div class="col-md-4">
+               <button id='seeResult' class="btn btn-primary btn-sx center-block" type="button">Convert</button>
+          </div>
+          <div class="col-md-4">
+             
+          </div>
+        </div>
+        <div class='row row2' >
+          <div class="col-md-4">
+             
+          </div>
+          <div class="col-md-4">
+            <span id='fromT' ></span>&nbsp; <span id='result'></span>&nbsp;
+          </div>
+          <div class="col-md-4">
+             
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+"use strict";
+
+ $(document).ready(function()
+{
+
+  $.ajax ({
+      url: '/index/gethistory',
+      contentType: 'application/json;',
+      type: 'POST',
+      dataType: 'json',
+      async : false,
+      data: {},
+      success: function(json){
+          var string = "";
+          console.log(json.length);
+          var length = json.length;
+          for (var i = 0; i < length; i++)
+          {
+            string += "<tr>";
+            string += "<td>" + json[i].Currency_in + "</td>";
+            string += "<td>" + json[i].Amount + "</td>";
+            string += "<td>" + json[i].Result + "</td>";
+            string += "<td>" + json[i].Currency_out + "</td>";
+            string += "</tr>";
+          }
+          console.log(string);
+           $('table tr:last').after(string);
+          
+      },
+      error : function(xhr, status){
+          console.log(status);
+      },
+  });
+    $("#seeResult").click(function(){
+
+        var from = $("#from option:selected" ).text();
+        var to = $("#to option:selected" ).text();
+        var amount = $("#amount").val();
+        
+        if (amount != "")
+        {
+          $("#no-input").html("");
+          $.ajax ({
+              url: '/index/calculate',
+              contentType: 'application/json;',
+              type: 'GET',
+              dataType: 'json',
+              async : false,
+              data: {'from': from, 'to': to, 'amount': amount},
+              success: function(json){
+                  $("#fromT").show();
+                  $("#result").show();
+                  $("#result").html(json.conversion + " " + to);
+                  $("#fromT").html(amount + " " + from + " = ");
+                  var string = "";
+                  var length = json.history.length;
+                  for (var i = 0; i < length; i++)
+                  {
+                    string += "<tr>";
+                    string += "<td>" + json.history[i].Currency_in + "</td>";
+                    string += "<td>" + json.history[i].Amount + "</td>";
+                    string += "<td>" + json.history[i].Result + "</td>";
+                    string += "<td>" + json.history[i].Currency_out + "</td>";
+                    string += "</tr>";
+                    console.log("Sad =" + string);
+                  }
+                  $("table tr:gt(0)").remove();
+                  console.log(string);
+                  $('table tr:last').after(string);
+              },
+              error : function(xhr, status){
+                  console.log(status);
+              },
+          });
+        }
+        else
+        {
+          $("#no-input").html("enter amount");
+          $("#fromT").hide();
+          $("#result").hide();
+        }
+
+    });
+
+    $("#swap").click(function(){
+    
+      var second = $("#to").find(":selected").index();
+      var first = $("#from").find(":selected").index();
+      
+      $("select#to").prop('selectedIndex', first);
+      $("select#from").prop('selectedIndex', second);
+    });
+
+  
+});
+
+setInterval(callXML,3600000);
+
+function callXML() {
+        var param1 = 'first';  
+        var param2 = 'second'; 
+        $.ajax ({
+          
+            url: '/index/getxmlrates',
+            contentType: 'application/json;',
+            type: 'POST',
+            dataType: 'json',
+            async : true,
+            data: {param1: param1, param2:param2 },
+            success: function(json){
+                console.log(json);
+
+            },
+            error : function(xhr, status){
+                console.log(status);
+            },
+        });
+}
+
+</script>
+</body>

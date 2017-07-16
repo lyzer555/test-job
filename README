@@ -1,0 +1,70 @@
+-------------------------------
+Currency converter
+-------------------------------
+
+Web application was developed using LEMP stack - Linux, NGINX, MySQL, PHP
+
+Requires PHP installed
+
+-------------------------------
+Composer installation 
+-------------------------------
+
+Composer installation can be done with a single command showed bellow:
+
+$ curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+
+To test installation, run:
+
+$ composer
+
+
+-------------------------------
+Installing Zend v1.12.20 - Can be complicated :)
+-------------------------------
+
+Download Zend v1.12.20 framework from:
+https://framework.zend.com/downloads/archives
+
+Create Zend v1.12.20 project with composer following the link below:
+https://adamcod.es/2013/05/10/composer-and-zend-framework-1.x.html
+
+
+-------------------------------
+Installing MySQL and NGINX
+-------------------------------
+
+The complete installation with explanations can be found on:
+https://www.howtoforge.com/installing-nginx-with-php5-fpm-and-mysql-on-ubuntu-14.04-lts-lemp
+
+-------------------------------
+Installing PHINX 
+-------------------------------
+
+Type:
+
+$ composer require robmorgan/phinx
+
+Phinx can now be executed within your project:
+
+$ vendor/bin/phinx init
+
+-------------------------------
+Starting the project
+-------------------------------
+
+Before starting the project, import the extracted CurrencyConverter.sql file in your localhost/phpmyadmin
+and configure acces "username" and "password" in the model/Currency.php file.
+
+start NGINX with command:
+
+$ sudo service nginx start
+
+From the root of the project type a command:
+
+$ php -S localhost:[port_number] -t public
+
+In your browser open localhost:[port_number]
+
+
+

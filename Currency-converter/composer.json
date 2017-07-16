@@ -1,0 +1,14 @@
+{
+    "name": "currency/currency-converter",
+    "description": "Currency converter",
+    "require": {
+        "zendframework/zendframework1": "1.12.20",
+        "robmorgan/phinx": "^0.8.1"
+    },
+    "authors": [
+        {
+            "name": "Andjela Arsic",
+            "email": "andjelaaarsic955@gmail.com"
+        }
+    ]
+}
